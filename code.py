@@ -1,7 +1,9 @@
+import time
+
 import board
 import busio
 import digitalio
-import time
+
 from acc import Accelerometer
 from baro import Barometer
 import storage
@@ -29,6 +31,7 @@ while True:
     led.value = True
     data = []
     acc.get()
+    data.append(time.monotonic())
     data.extend(acc.acceleration)
     data.extend(acc.orientation)
     baro.get()
