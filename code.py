@@ -6,7 +6,6 @@ import digitalio
 
 from acc import Accelerometer
 from baro import Barometer
-import storage
 
 led = digitalio.DigitalInOut(board.LED)
 led.direction = digitalio.Direction.OUTPUT
@@ -15,12 +14,28 @@ hc12 = busio.UART(tx=board.GP4, rx=board.GP5, baudrate=9600)
 acc = Accelerometer()
 baro = Barometer()
 
+# try to get the latest flight number
+try:
+    with open('flight_number.txt', 'r') as f:
+        flight_number = int(f.read())+1
+except OSError:
+    # if the file doesn't exists, it is the first flight
+    flight_number = 0
 
-storage.remount("/", readonly=False)
+# write the new flight number
+with open('flight_number.txt', 'w') as f:
+    f.write(str(flight_number))
 
+# data file
+filename = f'flight_{flight_number}.txt'
+
+# calibration
 led.value = True
-acc.calibrate()
-baro.calibrate()
+acc_cal = acc.calibrate()
+baro_cal = baro.calibrate()
+# save calibrations values
+with open('cal_' + filename, 'w') as f:
+    f.write(str(acc_cal) + '\n' + str(baro_cal))
 led.value = False
 
 filename = 'data.txt'

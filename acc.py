@@ -37,6 +37,7 @@ class Accelerometer:
         )
         
         print('LSM Calibration value:', self.cal_gyro, self.cal_acc)
+        return self.cal_gyro, self.cal_acc
 
     orientation = [0, 0, 0]
     acceleration = [0, 0, 0]

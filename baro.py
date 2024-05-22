@@ -17,6 +17,7 @@ class Barometer:
         
         self.bmp.sea_level_pressure = sum(cal_avg)/n_cal
         print('BMP Calibration value:', self.bmp.sea_level_pressure)
+        return self.bmp.sea_level_pressure
         
     pressure = 0
     altitude = 0
