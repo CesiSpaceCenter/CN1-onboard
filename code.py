@@ -23,9 +23,10 @@ acc.calibrate()
 baro.calibrate()
 led.value = False
 
+filename = 'data.txt'
+
 buffer = b''
-i_buf = 0
-_i = 0
+n_packets = 0
 
 while True:
     led.value = True
@@ -38,14 +39,15 @@ while True:
     data.append(baro.pressure)
     data.append(baro.altitude)
     data.append(baro.temperature)
-    data_enc = (",".join([str(val) for val in data])).encode() + b'\n'  + str(_i).encode()+ b'\n'
-    hc12.write(data_enc)
-    buffer += data_enc
-    if i_buf == 10:
-        i_buf = 0
-        with open('data.txt', 'wb') as file:
+    packet = (",".join([str(val) for val in data])).encode() + b'\n' # join every data item with a comma
+    hc12.write(packet)
+    buffer += packet
+    if n_packets == 10: # if 10 packets have been captured
+        n_packets = 0
+        # save to a file
+        with open(filename, 'ab') as file:
             file.write(buffer)
-    i_buf += 1
-    _i += 1
+            buffer = b''
+    n_packets += 1
     led.value = False
     time.sleep(0.1)
